@@ -19,9 +19,10 @@ while True:
         break
 
     # Находим ссылку на Older Posts и кликаем на нее
-    older_posts_link = driver.find_element_by_css_selector('a.older-posts')
-    print(older_posts_link)
-    older_posts_link.click()
+    older_posts_link = driver.find_element_by_css_selector('nav.pagination a.older-posts')
+    older_posts_url = urljoin(driver.current_url, older_posts_link.get_attribute('href'))
+    print("Processing URL:", older_posts_url)
+    driver.get(older_posts_url)
 
     # Ждем, чтобы страница загрузилась
     time.sleep(10)
