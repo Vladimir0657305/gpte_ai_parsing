@@ -7,7 +7,7 @@ import requests
 import time
 import pandas as pd
 
-last_page = 3
+last_page = 72
 data_all = []
 
 def get_data(driver):
@@ -26,7 +26,15 @@ def get_data(driver):
         for category_selector in ['.post-card-primary-tag', '.post-card-tags']:
             try:
                 category_elem = article.find_element(By.CSS_SELECTOR, category_selector)
-                category = category_elem.text.split()[1] if category_elem else None
+                category_text = category_elem.text
+                if category_text:
+                    category_list = category_text.split()
+                    if len(category_list) > 1:
+                        category = category_list[1]
+                    else:
+                        category = category_list[0]
+                else:
+                    category = 'Unknown'
                 break
             except NoSuchElementException:
                 category = 'Unknown'
@@ -46,10 +54,15 @@ def get_data(driver):
         except NoSuchElementException:
             link = 'Unknown'
             pass
-        
-        # Переходим по ссылке и получаем URL после переадресации
-        response = requests.get(link)
-        final_url = response.url
+
+        try:
+            # Переходим по ссылке и получаем URL после переадресации
+            response = requests.get(link, verify=False)
+            final_url = response.url
+        except (requests.exceptions.ConnectionError, AttributeError):
+            final_url = 'Unknown'
+            pass
+
         
         print("Processing article:", title)
         print("Category:", category)
