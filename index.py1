@@ -1,6 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from urllib.parse import urljoin
 import time
+import pandas as pd
+
+# Создаем список, в котором будем хранить данные
+data = []
 
 driver = webdriver.Chrome()
 driver.get("https://gpte.ai/")
@@ -25,7 +30,27 @@ while True:
     driver.get(older_posts_url)
 
     # Ждем, чтобы страница загрузилась
-    time.sleep(10)
+    time.sleep(20)
 
-# Теперь можно парсить содержимое страницы, включая все элементы, загруженные при скролле
-content = driver.page_source
+    # Находим все элементы статей на странице
+    articles = driver.find_elements_by_css_selector('div.post')
+
+    # Извлекаем информацию из каждой статьи и добавляем ее в список данных
+    for article in articles:
+        title = article.find_element_by_css_selector('h2.title').text
+        category = article.find_element_by_css_selector('a.category').text
+        description = article.find_element_by_css_selector('div.excerpt').text
+        image_url = article.find_element_by_css_selector('img').get_attribute('src')
+
+        data.append({
+            'Title': title,
+            'Category': category,
+            'Description': description,
+            'Image URL': image_url
+        })
+
+# Создаем DataFrame из списка данных
+df = pd.DataFrame(data)
+
+# Сохраняем DataFrame в CSV-файл
+df.to_csv('data.csv', index=False)
