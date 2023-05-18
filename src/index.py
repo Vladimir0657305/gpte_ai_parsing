@@ -80,8 +80,6 @@ def get_data(driver):
 
     return data
 
-
-
 driver = webdriver.Chrome()
 driver.implicitly_wait(10)
 driver.get("https://gpte.ai/")
