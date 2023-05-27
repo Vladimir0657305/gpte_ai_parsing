@@ -7,7 +7,7 @@ import requests
 import time
 import pandas as pd
 
-last_page = 72
+last_page = 3
 data_all = []
 
 def get_data(driver):
@@ -87,7 +87,6 @@ driver.get("https://gpte.ai/")
 # Получаем данные со стартовой страницы и добавляем их в переменную data
 data_all = get_data(driver)
 
-# Прокручиваем страницу до конца, чтобы загрузить все элементы
 num_page = 2
 while num_page <= last_page:
     # Строим URL страницы для парсинга
@@ -106,6 +105,6 @@ driver.quit()
 df = pd.DataFrame(data_all)
 
 # Сохраняем DataFrame в CSV-файл
-df.to_csv('D:/data.csv', index=False)
+df.to_csv('data.csv', index=False)
 
 
